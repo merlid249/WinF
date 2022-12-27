@@ -68,7 +68,7 @@ namespace SoftExpressWinFO
 
             if (e.ColumnIndex == 0 && e.RowIndex >= 0)
             {
-                // Get information of row when "Edit" button is clicked
+
                 globalId = Convert.ToInt32(row.Cells["Id"].Value);
 
                
@@ -98,8 +98,6 @@ namespace SoftExpressWinFO
                 cbTipi.Text = (row.Cells["Tipi"].Value).ToString() ;
                 txtBarkodi.Text = (row.Cells["Barkod"].Value).ToString();
 
-
-                // Do something with the row information
             }
             else if (e.ColumnIndex == 1 && e.RowIndex >= 0)
             {
