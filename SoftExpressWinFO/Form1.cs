@@ -32,35 +32,6 @@ namespace SoftExpressWinFO
         {
             loadData();
         }
-        public void loadData()
-        {// Load data into the DataGridView
-            dataGridView1.DataSource = _context.Fatures.ToList();
-
-            // Check if the Edit button column already exists in the DataGridView
-            if (dataGridView1.Columns["Edit"] == null)
-            {
-                // Add the Edit button column to the DataGridView
-                DataGridViewButtonColumn editButtonColumn = new DataGridViewButtonColumn();
-                editButtonColumn.HeaderText = "Edit";
-                editButtonColumn.Text = "Edit";
-                editButtonColumn.Name = "Edit";
-                editButtonColumn.UseColumnTextForButtonValue = true;
-                dataGridView1.Columns.Insert(0, editButtonColumn);
-            }
-
-            // Check if the Delete button column already exists in the DataGridView
-            if (dataGridView1.Columns["Delete"] == null)
-            {
-                // Add the Delete button column to the DataGridView
-                DataGridViewButtonColumn deleteButtonColumn = new DataGridViewButtonColumn();
-                deleteButtonColumn.Text = "Delete";
-                deleteButtonColumn.HeaderText = "Delete";
-                deleteButtonColumn.Name = "Delete";
-                deleteButtonColumn.UseColumnTextForButtonValue = true;
-                dataGridView1.Columns.Insert(1, deleteButtonColumn);
-            }
-
-        }
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             int rowIndex = e.RowIndex;
@@ -69,10 +40,34 @@ namespace SoftExpressWinFO
             if (e.ColumnIndex == 0 && e.RowIndex >= 0)
             {
                 // Get information of row when "Edit" button is clicked
-                object featureId = row.Cells["Id"].Value;
-                object featureName = row.Cells["Emertimi"].Value;
-                txtEmertimi.Text = featureName.ToString();
-                object featureDescription = row.Cells["DatasKdences"].Value;
+                int   featureId = Convert.ToInt32(row.Cells["Id"].Value);
+
+               
+                txtEmertimi.Text = (row.Cells["Emertimi"].Value).ToString();
+                dtSkadenc.Text = (row.Cells["DatasKdences"].Value).ToString();
+                txtNjesia.Text = (row.Cells["Njesia"].Value).ToString();
+                txtCmimi.Text = (row.Cells["Cmimi"].Value).ToString();
+                string lloji = (row.Cells["Lloji"].Value).ToString();
+                if (lloji == "Vendi")
+                {
+                    rdlloji2.Checked = true;
+                    rbLloji.Checked = false;
+                }
+                else
+                {
+                    rdlloji2.Checked = false;
+                    rbLloji.Checked = true;
+                }
+                if (Convert.ToInt32(row.Cells["KaTvsh"].Value)==1){
+                    cbKaTVSH.Checked = true;
+                }
+                else
+                {
+                    cbKaTVSH.Checked = false;
+                }
+
+                cbTipi.Text = (row.Cells["Tipi"].Value).ToString() ;
+                txtBarkodi.Text = (row.Cells["Barkod"].Value).ToString();
 
                 // Do something with the row information
             }
@@ -84,7 +79,7 @@ namespace SoftExpressWinFO
                 {
                     Fature ft1= new Fature();
 
-                    DeleteFature(id, ft1);
+                    DeleteFature(id);
                     MessageBox.Show("U fshi me sukses!");
                     loadData();
 
@@ -120,19 +115,34 @@ namespace SoftExpressWinFO
             _context.Fatures.Add(ft1);
             _context.SaveChanges();
             MessageBox.Show("Regjistrimi u krye me sukses ! ");
-
+            ClearForm();
         }
 
         private void btnKerko_Click(object sender, EventArgs e)
         {
-            if (txtEmertimi.Text!=null) 
+            Kerko(txtEmertimi.Text, txtBarkodi.Text);
+
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+        }
+
+        //Methods
+        private void Ruaj()
+        {
+
+        }
+        private void Kerko(string emertimi,  string  barkodi)
+        {
+            if (emertimi != null)
             {
-              var fature1=  _context.Fatures.FirstOrDefault(x => x.Emertimi == txtEmertimi.Text);
+                var fature1 = _context.Fatures.FirstOrDefault(x => x.Emertimi == txtEmertimi.Text);
                 txtEmertimi.Text = fature1.Emertimi;
                 txtNjesia.Text = fature1.Njesia;
                 txtCmimi.Text = fature1.Cmimi.ToString();
                 dtSkadenc.Text = fature1.DatasKdences.ToString();
-                if (fature1.Lloji== "Vendi")
+                if (fature1.Lloji == "Vendi")
                 {
                     rdlloji2.Checked = true;
                     rbLloji.Checked = false;
@@ -142,31 +152,52 @@ namespace SoftExpressWinFO
                     rdlloji2.Checked = false;
                     rbLloji.Checked = true;
                 }
-                if (fature1.KaTvsh==true)
+                if (fature1.KaTvsh == true)
                 {
                     cbKaTVSH.Checked = true;
 
                 }
                 else
                 {
-                    cbKaTVSH.Checked = false ;
+                    cbKaTVSH.Checked = false;
                 }
                 cbTipi.Text = fature1.Tipi;
                 txtBarkodi.Text = fature1.Barkod;
-
-
-
+            }
+            else
+            {
+                MessageBox.Show("Fatura nuk u gjet ! ");
             }
         }
-
-        private void btnUpdate_Click(object sender, EventArgs e)
+        private  void loadData()
         {
+            dataGridView1.DataSource = _context.Fatures.ToList();
+
+            if (dataGridView1.Columns["Edit"] == null)
+            {
+                // Add the Edit button column to the DataGridView
+                DataGridViewButtonColumn editButtonColumn = new DataGridViewButtonColumn();
+                editButtonColumn.HeaderText = "Edit";
+                editButtonColumn.Text = "Edit";
+                editButtonColumn.Name = "Edit";
+                editButtonColumn.UseColumnTextForButtonValue = true;
+                dataGridView1.Columns.Insert(0, editButtonColumn);
+            }
+
+            // Check if the Delete button column already exists in the DataGridView
+            if (dataGridView1.Columns["Delete"] == null)
+            {
+                // Add the Delete button column to the DataGridView
+                DataGridViewButtonColumn deleteButtonColumn = new DataGridViewButtonColumn();
+                deleteButtonColumn.Text = "Delete";
+                deleteButtonColumn.HeaderText = "Delete";
+                deleteButtonColumn.Name = "Delete";
+                deleteButtonColumn.UseColumnTextForButtonValue = true;
+                dataGridView1.Columns.Insert(1, deleteButtonColumn);
+            }
 
         }
-
-        //Methods
-
-        private void DeleteFature(int id, Fature fature)
+        private void DeleteFature(int id)
         {
             var cusDel=  (from y in _context.Fatures
                          where y.Id == id
@@ -178,6 +209,18 @@ namespace SoftExpressWinFO
 
             }
 
+        }
+        private void ClearForm()
+        {
+            txtEmertimi.Text = "";
+            txtNjesia.Text = "";
+            txtCmimi.Text = "";
+            dtSkadenc.Text = "";
+            rbLloji.Checked = false;
+            rdlloji2.Checked = false;
+            cbKaTVSH.Checked = false;
+            cbTipi.Text = "";
+            txtBarkodi.Text = "";
         }
     }
 }
