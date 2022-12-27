@@ -59,6 +59,8 @@ namespace SoftExpressWinFO
         {
             loadData();
         }
+
+        int globalId;
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             int rowIndex = e.RowIndex;
@@ -67,7 +69,7 @@ namespace SoftExpressWinFO
             if (e.ColumnIndex == 0 && e.RowIndex >= 0)
             {
                 // Get information of row when "Edit" button is clicked
-                int   featureId = Convert.ToInt32(row.Cells["Id"].Value);
+                globalId = Convert.ToInt32(row.Cells["Id"].Value);
 
                
                 txtEmertimi.Text = (row.Cells["Emertimi"].Value).ToString();
@@ -154,10 +156,15 @@ namespace SoftExpressWinFO
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
+
+            // Get the selected row in the DataGridView
+
+            int id = globalId;
             Fature fatureNew = _context.Fatures.First(x => x.Id == id);
             fatureNew.Emertimi = txtEmertimi.Text;
             fatureNew.Njesia = txtNjesia.Text;
             fatureNew.DatasKdences = DateTime.Parse(dtSkadenc.Text.Trim());
+            fatureNew.Cmimi=Convert.ToInt32(txtCmimi.Text.Trim());
             if (rbLloji.Checked)
             {
                 fatureNew.Lloji = "Importuar";
@@ -179,6 +186,7 @@ namespace SoftExpressWinFO
             fatureNew.Barkod = txtBarkodi.Text;
 
             _context.SaveChanges();
+            ClearForm();
         }
 
         //Methods
