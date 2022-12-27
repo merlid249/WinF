@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using System.Data.Entity.Migrations;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -20,6 +21,32 @@ namespace SoftExpressWinFO
         public Form1()
         {
             InitializeComponent();
+
+            // Set the FormBorderStyle property to None
+            this.FormBorderStyle = FormBorderStyle.None;
+
+            // Add a custom close button to the form
+            Button closeButton = new Button();
+            closeButton.Text = "X";
+            closeButton.DialogResult = DialogResult.Cancel;
+            closeButton.Location = new Point(this.Width - 30, 0);
+            closeButton.Size = new Size(30, 30);
+            closeButton.Click += new EventHandler(closeButton_Click);
+            this.Controls.Add(closeButton);
+        }
+
+        private void closeButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (e.CloseReason == CloseReason.UserClosing && this.DialogResult == DialogResult.Cancel)
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -68,6 +95,7 @@ namespace SoftExpressWinFO
 
                 cbTipi.Text = (row.Cells["Tipi"].Value).ToString() ;
                 txtBarkodi.Text = (row.Cells["Barkod"].Value).ToString();
+
 
                 // Do something with the row information
             }
@@ -126,13 +154,35 @@ namespace SoftExpressWinFO
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
+            Fature fatureNew = _context.Fatures.First(x => x.Id == id);
+            fatureNew.Emertimi = txtEmertimi.Text;
+            fatureNew.Njesia = txtNjesia.Text;
+            fatureNew.DatasKdences = DateTime.Parse(dtSkadenc.Text.Trim());
+            if (rbLloji.Checked)
+            {
+                fatureNew.Lloji = "Importuar";
+            }
+            else if (rdlloji2.Checked)
+            {
+                fatureNew.Lloji = "Vendi";
+            }
+            if (cbKaTVSH.Checked)
+            {
+                fatureNew.KaTvsh = true;
+
+            }
+            else
+            {
+                fatureNew.KaTvsh = false;
+            }
+            fatureNew.Tipi = cbTipi.Text;
+            fatureNew.Barkod = txtBarkodi.Text;
+
+            _context.SaveChanges();
         }
 
         //Methods
-        private void Ruaj()
-        {
-
-        }
+        
         private void Kerko(string emertimi,  string  barkodi)
         {
             if (emertimi != null)
@@ -222,5 +272,7 @@ namespace SoftExpressWinFO
             cbTipi.Text = "";
             txtBarkodi.Text = "";
         }
+
+       
     }
 }
